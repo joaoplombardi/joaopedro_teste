@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html
+	lang="pt-br" 
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="_template.xhtml">
+	<ui:define name="content">
+		<p:messages id="messages" closable="true">
+            <p:autoUpdate/>
+        </p:messages>
+				<h:form>
+			<p:card class="card-form">
+				<f:facet name="title">
+			        Novo Motorista
+			    </f:facet>
+
+
+				<h:panelGrid columns="2">
+					<p:outputLabel for="nome" value="Nome" />
+					<p:inputText 
+								 id="nome" 
+								 value="#{motoristaBean.motorista.nome}"
+								 required="true"
+								 validatorMessage="O campo é obrigatório."
+								 >
+						<f:ajax event="blur" render="messages" />
+					</p:inputText>
+
+					<p:outputLabel for="data-nascimento" value="Data de Nascimento"/>
+						<p:calendar 
+							id="data-nascimento" 
+							value="#{motoristaBean.motorista.dtNascimento}" 
+							required="true" 
+							mask="true"
+							pattern="dd/MM/yyyy"
+							
+						>
+						<f:ajax event="blur" render="messages" />
+						</p:calendar>
+
+					<p:outputLabel for="cpf" value="CPF"/>
+					<p:inputText 
+								 id="cpf" 
+								 value="#{motoristaBean.motorista.cpf}" 
+								 required="true" 
+								 validatorMessage="CPF inválido"
+								 >
+						<f:ajax event="blur" render="messages" />
+						<f:validateRegex pattern="([0-9]{2}[\.]?[0-9]{3}[\.]?[0-9]{3}[\/]?[0-9]{4}[-]?[0-9]{2})|([0-9]{3}[\.]?[0-9]{3}[\.]?[0-9]{3}[-]?[0-9]{2})" />
+					</p:inputText>
+					
+					
+					<p:outputLabel for="modelo-carro" value="Modelo do Carro" />
+					<p:inputText 
+								 id="modelo-carro" 
+								 value="#{motoristaBean.motorista.modeloCarro}"
+								 required="true"
+								 validatorMessage="O campo é obrigatório."
+								 >
+						<f:ajax event="blur" render="messages" />
+					</p:inputText>
+					
+					<p:outputLabel for="sexo" value="Sexo"/>
+					<p:selectOneRadio id="sexo" value="#{motoristaBean.motorista.sexo}" unselectable="true" required="true">
+			            <f:selectItem itemLabel="Masculino" itemValue="MASCULINO" />
+			            <f:selectItem itemLabel="Feminino" itemValue="FEMININO"/>
+			            <f:selectItem itemLabel="Outro" itemValue="OUTRO"/>
+        			</p:selectOneRadio>
+				</h:panelGrid>
+
+				<f:facet name="footer">
+					<p:commandButton icon="pi pi-check" value="Salvar" action="#{motoristaBean.salvar}" update="tabela-motoristas">
+						<p:ajax execute="@form"  />
+					</p:commandButton>
+				</f:facet>
+
+			</p:card>
+		</h:form>
+	        <p:dataTable id = "tabela-motoristas"
+	        			 var="motoristas" 
+	        			 value="#{motoristaBean.motoristas}" 
+	        			 rows="10"
+	                     paginator="true"
+	                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+	                     currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} motoristas"
+	                     >
+	
+	            <p:column headerText="Código">
+	                <h:outputText value="#{motoristas.id}" />
+	            </p:column>
+	
+	            <p:column headerText="Nome">
+	                <h:outputText value="#{motoristas.nome}" />
+	            </p:column>
+	            
+	            <p:column headerText="Cpf">
+	                <h:outputText value="#{motoristas.cpf}" />
+	            </p:column>
+	
+	            <p:column headerText="Data de Nascimento">
+	                <h:outputText value="#{motoristas.dtNascimento}">
+	                	<f:convertDateTime locale="pt_BR" dateStyle="short" />
+	                </h:outputText>
+	            </p:column>
+	
+	            <p:column headerText="Carro">
+	                <h:outputText value="#{motoristas.modeloCarro}" />
+	            </p:column>
+	            
+	            <p:column headerText="Sexo">
+	                <h:outputText value="#{motoristas.sexo}" />
+	            </p:column>
+	            
+	            <p:column headerText="Status">
+	                <h:outputText value="#{motoristas.status}" />
+	            </p:column>
+	            
+	            <p:column headerText="Trocar Status">
+		                <h:commandButton type="button" 
+		                				 rendered="#{motoristas.status eq 'ATIVO'}"
+		                				 value="Inativar"
+		                				 action="#{motoristaBean.trocarStatus}" 
+		                				 update="tabela-motoristas"
+		                				 class="botao-status">
+		                	
+		                	<f:param name = "id-motorista" value="#{motoristas.id}" />
+		                	<f:ajax  render=":tabela-motoristas"/>
+		                </h:commandButton>
+		                
+		                <h:commandButton type="button" 
+		                				 rendered="#{motoristas.status eq 'INATIVO'}"
+		                				 value="Ativar"
+		                				 action="#{motoristaBean.trocarStatus}"
+		                				 >
+		                	
+		                	<f:param name = "id-motorista" value="#{motoristas.id}" />
+		                	<f:ajax  render=":tabela-motoristas"/>
+		                </h:commandButton>
+	            </p:column>
+	            <h:commandButton></h:commandButton>
+	
+	        </p:dataTable>
+        
+		
+	</ui:define>
+</ui:composition>
+</html>
