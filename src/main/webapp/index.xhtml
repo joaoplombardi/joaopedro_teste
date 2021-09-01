@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html
+	lang="pt-br" 
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="_template.xhtml">
+	<ui:define name="content">
+		<p:messages id="messages" closable="true">
+            <p:autoUpdate/>
+        </p:messages>
+				<h:form>
+			<p:card class="card-form">
+				<f:facet name="title">
+			        Nova Corrida
+			    </f:facet>
+
+
+				<h:panelGrid columns="2">
+					<p:outputLabel for="passageiro" value="Passageiro: "/>
+	                <p:selectOneMenu id="passageiro" value="#{corridaBean.idPassageiro}" rendered="true" style="width:250px">
+	                    <p:ajax event="itemSelect"  update="messages"/>
+	                    <f:selectItem itemLabel="-Selecione o passageiro-" itemValue="" noSelectionOption="true"/>
+	                    <f:selectItems value="#{passageiroBean.passageiros}" var="passageiro" itemLabel="#{passageiro.nome}" itemValue="#{passageiro.id}"/>
+	                </p:selectOneMenu>
+
+
+					<p:outputLabel for="motorista" value="Motorista: "/>
+	                <p:selectOneMenu id="motorista" value="#{corridaBean.idMotorista}" rendered="true" style="width:250px">
+	                    <p:ajax event="itemSelect"  update="messages"/>
+	                    <f:selectItem itemLabel="-Selecione o motorista-" itemValue="" noSelectionOption="true"/>
+	                    <f:selectItems value="#{motoristaBean.motoristas}" var="motorista" itemLabel="#{motorista.nome}" itemValue="#{motorista.id}"/>
+	                </p:selectOneMenu>
+					<p:outputLabel for="valor" value="Valor da Corrida"/>
+					<p:inputText 
+								 id="valor" 
+								 value="#{corridaBean.corrida.valor}" 
+								 required="true" 
+								 converterMessage="O valor deve ser numérico."
+								 >
+								 <f:validateDoubleRange minimum="0"/>
+						<f:ajax event="blur" render="messages" />
+					</p:inputText>
+				</h:panelGrid>
+
+				<f:facet name="footer">
+					<p:commandButton icon="pi pi-check" value="Salvar" action="#{corridaBean.salvar}" update="tabela-corridas">
+						<p:ajax execute="@form"  />
+					</p:commandButton>
+				</f:facet>
+
+			</p:card>
+		</h:form>
+	        <p:dataTable id = "tabela-corridas"
+	        			 var="corridas" 
+	        			 value="#{corridaBean.corridas}" 
+	        			 rows="10"
+	                     paginator="true"
+	                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+	                     currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} corridas"
+	                     >
+	
+	            <p:column headerText="Código">
+	                <h:outputText value="#{corridas.id}" />
+	            </p:column>
+	
+	            <p:column headerText="Motorista">
+	                <h:outputText value="#{corridas.motorista.nome}" />
+	            </p:column>
+	
+	            <p:column headerText="Passageiro">
+	                <h:outputText value="#{corridas.passageiro.nome}">
+	                	<f:convertDateTime locale="pt_BR" dateStyle="short" />
+	                </h:outputText>
+	            </p:column>
+	            
+	            <p:column headerText="Valor">
+	                <h:outputText value="#{corridas.valor}" />
+	            </p:column>
+
+	        </p:dataTable>
+        
+		
+	</ui:define>
+</ui:composition>
+</html>

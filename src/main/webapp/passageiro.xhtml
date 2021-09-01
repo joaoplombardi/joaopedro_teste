@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html
+	lang="pt-br" 
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="_template.xhtml">
+	<ui:define name="content">
+		<p:messages id="messages" closable="true">
+            <p:autoUpdate/>
+        </p:messages>
+				<h:form>
+			<p:card class="card-form">
+				<f:facet name="title">
+			        Novo Passageiro
+			    </f:facet>
+
+
+				<h:panelGrid columns="2">
+					<p:outputLabel for="nome" value="Nome" />
+					<p:inputText 
+								 id="nome" 
+								 value="#{passageiroBean.passageiro.nome}"
+								 required="true"
+								 validatorMessage="O campo é obrigatório."
+								 >
+						<f:ajax event="blur" render="messages" />
+					</p:inputText>
+
+					<p:outputLabel for="data-nascimento" value="Data de Nascimento"/>
+						<p:calendar 
+							id="data-nascimento" 
+							value="#{passageiroBean.passageiro.dtNascimento}" 
+							required="true" 
+							mask="true"
+							pattern="dd/MM/yyyy"
+							
+						>
+						<f:ajax event="blur" render="messages" />
+						</p:calendar>
+					<p:outputLabel for="cpf" value="CPF"/>
+					<p:inputText 
+								 id="cpf" 
+								 value="#{passageiroBean.passageiro.cpf}" 
+								 required="true" 
+								 validatorMessage="CPF inválido"
+								 >
+						<f:ajax event="blur" render="messages" />
+						<f:validateRegex pattern="([0-9]{2}[\.]?[0-9]{3}[\.]?[0-9]{3}[\/]?[0-9]{4}[-]?[0-9]{2})|([0-9]{3}[\.]?[0-9]{3}[\.]?[0-9]{3}[-]?[0-9]{2})" />
+					</p:inputText>
+
+					<p:outputLabel for="sexo" value="Sexo"/>
+					<p:selectOneRadio id="sexo" value="#{passageiroBean.passageiro.sexo}" unselectable="true" required="true">
+			            <f:selectItem itemLabel="Masculino" itemValue="MASCULINO" />
+			            <f:selectItem itemLabel="Feminino" itemValue="FEMININO"/>
+			            <f:selectItem itemLabel="Outro" itemValue="OUTRO"/>
+        			</p:selectOneRadio>
+				</h:panelGrid>
+
+				<f:facet name="footer">
+					<p:commandButton icon="pi pi-check" value="Salvar" action="#{passageiroBean.salvar}" update="tabela-passageiros">
+						<p:ajax execute="@form"  />
+					</p:commandButton>
+				</f:facet>
+
+			</p:card>
+		</h:form>
+	        <p:dataTable id = "tabela-passageiros"
+	        			 var="passageiros" 
+	        			 value="#{passageiroBean.passageiros}" 
+	        			 rows="10"
+	                     paginator="true"
+	                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+	                     currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} passageiros"
+	                     >
+	
+	            <p:column headerText="Código">
+	                <h:outputText value="#{passageiros.id}" />
+	            </p:column>
+	
+	            <p:column headerText="Nome">
+	                <h:outputText value="#{passageiros.nome}" />
+	            </p:column>
+	            
+	            <p:column headerText="Cpf">
+	                <h:outputText value="#{passageiros.cpf}" />
+	            </p:column>
+	
+	            <p:column headerText="Data de Nascimento">
+	                <h:outputText value="#{passageiros.dtNascimento}">
+	                	<f:convertDateTime locale="pt_BR" dateStyle="short" />
+	                </h:outputText>
+	            </p:column>
+	            
+	            <p:column headerText="Sexo">
+	                <h:outputText value="#{passageiros.sexo}" />
+	            </p:column>
+
+	        </p:dataTable>
+        
+		
+	</ui:define>
+</ui:composition>
+</html>
